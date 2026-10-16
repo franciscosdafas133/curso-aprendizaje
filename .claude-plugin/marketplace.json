@@ -1,0 +1,21 @@
+{
+  "name": "curso-aprendizaje",
+  "description": "Marketplace con el plugin de aprendizaje DM/ML",
+  "owner": {
+    "name": "Francisco Luis Delgado Santana",
+    "email": "franciscoluisdelgadosantana@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "curso-aprendizaje",
+      "source": "./",
+      "description": "Inspecciona la carpeta del curso, descarga lecturas libres y genera teoría/práctica.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Francisco Luis Delgado Santana"
+      },
+      "category": "education",
+      "homepage": "https://github.com/franciscosdafas133/curso-aprendizaje"
+    }
+  ]
+}

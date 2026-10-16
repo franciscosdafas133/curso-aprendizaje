@@ -1,80 +1,65 @@
 # curso-aprendizaje
 
-Skill/plugin **portable** de aprendizaje DM/ML: cualquiera la instala; opera sobre **su** carpeta de curso.
+Plugin/skill **portable** de aprendizaje DM/ML. Cualquiera lo instala; opera sobre **su** carpeta de curso.
 
-## Instalar (para cualquiera)
+Repo: https://github.com/franciscosdafas133/curso-aprendizaje
 
-### Opción A — Desde GitHub en Cursor (recomendado)
+---
 
-1. Cursor → **Customize** → plugins / **From GitHub Repository**
-2. Pega: `https://github.com/franciscosdafas133/curso-aprendizaje`
-3. Instala (user o project scope)
-4. En Agent chat: `/curso-aprendizaje`
+## Instalar como plugin (recomendado)
 
-### Opción B — Clone manual
-
-```bash
-git clone https://github.com/franciscosdafas133/curso-aprendizaje.git
-cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.cursor/skills/
-# deps de los scripts
-cd curso-aprendizaje && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
-```
-
-### Opción C — Plugin local de prueba (Cursor)
-
-```bash
-mkdir -p ~/.cursor/plugins/local
-cp -R curso-aprendizaje ~/.cursor/plugins/local/curso-aprendizaje
-# Reload Window → Customize → verificar plugin
-```
-
-### Claude Code
-
-**Skill personal (aparece con `/curso-aprendizaje`):**
-
-```bash
-git clone https://github.com/franciscosdafas133/curso-aprendizaje.git
-mkdir -p ~/.claude/skills
-cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.claude/skills/
-```
-
-**Como plugin (sesión de Claude Code):**
+### Claude Code — desde el chat
 
 ```text
 /plugin marketplace add franciscosdafas133/curso-aprendizaje
+/plugin install curso-aprendizaje@curso-aprendizaje
 ```
 
-o, sin marketplace, clona el repo y:
+Luego: `/curso-aprendizaje`
+
+### Cursor — desde la UI
+
+1. **Customize** → instalar **From GitHub Repository**
+2. URL: `https://github.com/franciscosdafas133/curso-aprendizaje`
+3. Agent chat → `/curso-aprendizaje`
+
+### Un comando (Cursor + Claude)
 
 ```bash
-claude plugin install ./curso-aprendizaje
+curl -fsSL https://raw.githubusercontent.com/franciscosdafas133/curso-aprendizaje/main/install.sh | bash
 ```
 
-Luego en el chat: `/curso-aprendizaje` (o el nombre que muestre el plugin).  
-Abre la carpeta de tu curso y pide generar teoría — opera sobre esa carpeta.
+Solo uno:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/franciscosdafas133/curso-aprendizaje/main/install.sh) claude
+bash <(curl -fsSL https://raw.githubusercontent.com/franciscosdafas133/curso-aprendizaje/main/install.sh) cursor
+```
+
+---
 
 ## Usar
 
 1. Abre tu carpeta de curso (`Data_Mining`, `Machine_Learning`, …).
-2. Chat Agent → `/curso-aprendizaje`
-3. Pide: “genera teoría con mis materiales y libros”.
+2. `/curso-aprendizaje`
+3. “Genera teoría con mis materiales y libros.”
 
-La skill inspecciona **esa** carpeta, descarga libres a `./libros/`, indexa y genera `./generated/`.
+Descarga a `./libros/`, índice en `./data/`, notebooks en `./generated/`.
+
+Deps de scripts:
 
 ```bash
-# equivalente por terminal
-python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir .
-# o, si instalaste como plugin, usa la ruta scripts/ del plugin
+pip install -r requirements.txt
 ```
 
-## Qué incluye
+---
+
+## Qué es
 
 | Pieza | Rol |
 |---|---|
-| Skill `curso-aprendizaje` | Método + orquestación |
-| `libros_teoria.py` | Inspeccionar curso → fetch → solo teoría |
-| `generate_learning.py` | Producto A/B |
-| `plugin.json` | Agent Plugins (portable) |
-| `.cursor-plugin/plugin.json` | Cursor Plugins |
+| Plugin (Cursor + Claude) | Instalación para cualquiera |
+| Skill `curso-aprendizaje` | Método |
+| `libros_teoria.py` | Inspeccionar curso → teoría |
 
 Ver `DEFINICION-PRODUCTO.md`. Probar: `bash comprobar.sh`.

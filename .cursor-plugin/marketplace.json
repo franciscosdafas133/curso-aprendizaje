@@ -1,0 +1,17 @@
+{
+  "name": "curso-aprendizaje",
+  "owner": {
+    "name": "Francisco Luis Delgado Santana",
+    "email": "franciscoluisdelgadosantana@gmail.com"
+  },
+  "metadata": {
+    "description": "Plugin de aprendizaje DM/ML instalable desde GitHub"
+  },
+  "plugins": [
+    {
+      "name": "curso-aprendizaje",
+      "source": "./",
+      "description": "Inspecciona la carpeta del curso, descarga lecturas libres y genera teoría/práctica."
+    }
+  ]
+}
