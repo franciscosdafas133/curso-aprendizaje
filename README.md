@@ -20,13 +20,38 @@ cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.cursor/skills/
 cd curso-aprendizaje && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
-### Opción C — Plugin local de prueba
+### Opción C — Plugin local de prueba (Cursor)
 
 ```bash
 mkdir -p ~/.cursor/plugins/local
 cp -R curso-aprendizaje ~/.cursor/plugins/local/curso-aprendizaje
 # Reload Window → Customize → verificar plugin
 ```
+
+### Claude Code
+
+**Skill personal (aparece con `/curso-aprendizaje`):**
+
+```bash
+git clone https://github.com/franciscosdafas133/curso-aprendizaje.git
+mkdir -p ~/.claude/skills
+cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.claude/skills/
+```
+
+**Como plugin (sesión de Claude Code):**
+
+```text
+/plugin marketplace add franciscosdafas133/curso-aprendizaje
+```
+
+o, sin marketplace, clona el repo y:
+
+```bash
+claude plugin install ./curso-aprendizaje
+```
+
+Luego en el chat: `/curso-aprendizaje` (o el nombre que muestre el plugin).  
+Abre la carpeta de tu curso y pide generar teoría — opera sobre esa carpeta.
 
 ## Usar
 

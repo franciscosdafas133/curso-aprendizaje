@@ -1,0 +1,8 @@
+{
+  "name": "curso-aprendizaje",
+  "description": "Aprendizaje DM/ML: inspecciona la carpeta del curso, descarga lecturas libres y genera teoría/práctica.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Francisco Luis Delgado Santana"
+  }
+}
