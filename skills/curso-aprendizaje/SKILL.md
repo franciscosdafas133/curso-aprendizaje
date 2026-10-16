@@ -1,10 +1,10 @@
 ---
 name: curso-aprendizaje
 description: >-
-  Sistema inteligente de aprendizaje DM/ML en Cursor: transforma materiales del
-  curso en Producto A (cuaderno conceptual-experimental) y Producto B (simulacros
-  de evaluación). Aprender: teoría y práctica conectadas. Evaluar: según perfil
-  (DM práctico; ML teórico + práctico separados). No es un resumidor.
+  Sistema inteligente de aprendizaje DM/ML en Cursor: materiales → Producto A
+  (cuaderno) y Producto B (simulacros). Incluye flujo general libros→solo teoría
+  (fetch legal + índice + notebook) usable en cualquier carpeta de curso.
+  No es un resumidor.
 ---
 
 # curso-aprendizaje
@@ -55,8 +55,18 @@ python3 skills/curso-aprendizaje/scripts/generate_learning.py \
   --index data/index --tema "KNN y escala" --perfil ml --outdir examples/generated
 ```
 
+### Solo teoría (inspecciona la carpeta del curso)
+
+```bash
+# Desde la raíz de tu curso (Data_Mining, Machine_Learning, …)
+python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir .
+```
+
+Auto: detecta DM/ML, lista materiales/libros/sílabo/semanas, descarga libres si faltan, indexa y genera `generated/A_solo_teoria_*.ipynb`.  
+Procedimiento: `libros-teoria.md`.
+
 ## Principios
 Comprensión > acumulación · conexión · experimento con propósito · rigor · citar procedencia · autonomía · Jupyter primero.
 
 ## Procedimientos
-`aprender.md` · `ingestar.md` · `indexar-consultar.md` · `web-y-generar.md`
+`aprender.md` · `ingestar.md` · `indexar-consultar.md` · `web-y-generar.md` · `libros-teoria.md`

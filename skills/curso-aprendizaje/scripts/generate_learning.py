@@ -263,6 +263,80 @@ No mezclar: primero comprender, después experimentar.
         + build_practica_cells(topic, hits, profile)
     )
 
+
+def build_solo_teoria(topic: str, hits: list[dict], profile: str) -> list[tuple[str, str]]:
+    """Cuaderno solo teórico anclado a libros/apuntes indexados (sin código)."""
+    cites = _cite(hits)
+    blob = _concept_blob(hits)
+    excerpt = re.sub(r"\s+", " ", blob)[:700]
+    excerpt2 = re.sub(r"\s+", " ", blob[700:1400]) if len(blob) > 700 else ""
+    return [
+        (
+            "markdown",
+            f"""# Producto A — SOLO TEORÍA (desde libros / lecturas)
+## Tema: {topic}
+**Perfil:** {profile.upper()}  
+**Fuente:** índice de lecturas (libros/papers). No incluye práctica ni simulacro.
+
+**Cómo estudiar:** coloquial → rigor → conexiones → autoevaluación.  
+**Generado:** {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")}
+""",
+        ),
+        (
+            "markdown",
+            f"""# 1. En palabras simples
+Cuenta el concepto a un compañero en ~2 minutos.
+
+Fragmento recuperado de las lecturas:
+> {excerpt}{'…' if len(blob) > 700 else ''}
+""",
+        ),
+        (
+            "markdown",
+            f"""# 2. Rigor (definiciones y mecanismos)
+- Definición formal
+- Supuestos
+- Qué optimiza / qué mide / qué decide
+- Límites y fallos típicos
+
+## Citas (procedencia)
+{cites}
+
+{('> ' + excerpt2 + '…') if excerpt2 else ''}
+""",
+        ),
+        (
+            "markdown",
+            f"""# 3. Mapa de conexiones
+Relaciona «{topic}» con:
+- preproceso / escala / dimensionalidad
+- métricas de evaluación
+- alternativas del temario
+- qué cambia si cambias un hiperparámetro clave
+""",
+        ),
+        ("markdown", "*(tu mapa / notas)*\n"),
+        (
+            "markdown",
+            """# 4. Autoevaluación teórica (sin mirar soluciones)
+1. Explica el mecanismo sin mirar el libro.
+2. Da un contraejemplo o caso límite.
+3. Compara con un método rival: ¿cuándo gana cada uno?
+4. Señala un error conceptual frecuente.
+""",
+        ),
+        ("markdown", "*(tus respuestas)*\n"),
+        (
+            "markdown",
+            """# 5. Etiquetas de procedencia
+Marca cada idea que anotes:
+- **libro/paper indexado**
+- **propuesta pedagógica** (explicación del skill, no del autor)
+- **hueco** (no aparece en las lecturas indexadas)
+""",
+        ),
+    ]
+
 def build_simulacro_teorico(topic: str, hits: list[dict]) -> tuple[list[tuple[str, str]], str]:
     """Producto B — línea teórica (ML / cuando la asignatura evalúa teoría aparte)."""
     cites = _cite(hits)
@@ -378,6 +452,11 @@ def main() -> int:
     ap.add_argument("--top", type=int, default=6)
     ap.add_argument("--solo-a", action="store_true")
     ap.add_argument("--solo-b", action="store_true")
+    ap.add_argument(
+        "--solo-teoria",
+        action="store_true",
+        help="Solo cuaderno teórico (libros/lecturas); no práctica ni Producto B",
+    )
     args = ap.parse_args()
 
     hits = query(Path(args.index), args.tema, top_k=args.top, min_score=0.03)
@@ -389,6 +468,34 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     slug = _slug(args.tema)
     paths: list[str] = []
+
+    if args.solo_teoria:
+        path_t = out / f"A_solo_teoria_{slug}_{args.perfil}.ipynb"
+        _write_nb(path_t, build_solo_teoria(args.tema, hits, args.perfil))
+        paths.append(str(path_t))
+        print(f"Producto A solo teoría (libros) → {path_t}")
+        man = out / f"manifest_{slug}_{args.perfil}_teoria.json"
+        man.write_text(
+            json.dumps(
+                {
+                    "tema": args.tema,
+                    "perfil": args.perfil,
+                    "metodo": "solo teoría desde lecturas indexadas",
+                    "hits": [
+                        {"source": h.get("source"), "locator": h.get("locator"), "score": h.get("score")}
+                        for h in hits
+                    ],
+                    "artifacts": paths,
+                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        print(f"manifest → {man}")
+        return 0
+
     do_a = not args.solo_b
     do_b = not args.solo_a
 

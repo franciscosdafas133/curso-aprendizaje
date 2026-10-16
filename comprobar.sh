@@ -55,6 +55,38 @@ assert any("wikipedia" in (r.get("url") or "").lower() and not r.get("accepted")
 print("accepted", len(acc), "rejected", len(rej))
 PY
 
+echo "== catálogo libros + solo-teoría =="
+test -f "$SCR/books_catalog.json"
+test -f "$SCR/fetch_books.py"
+test -f "$SCR/libros_teoria.py"
+test -f "$SCR/inspect_curso.py"
+python3 "$SCR/fetch_books.py" --curso dm --outdir materials/libros --dry-run
+mkdir -p examples/generated
+python3 "$SCR/generate_learning.py" --index data/index --tema "KNN y escalado" --perfil ml \
+  --solo-teoria --outdir examples/generated
+python3 - <<'PY'
+from pathlib import Path
+import json
+nb = Path("examples/generated/A_solo_teoria_knn-y-escalado_ml.ipynb")
+assert nb.exists(), nb
+cells = json.loads(nb.read_text())["cells"]
+text = "\n".join("".join(c.get("source", [])) for c in cells)
+assert "SOLO TEORÍA" in text
+assert not any(c.get("cell_type") == "code" for c in cells)
+print("solo-teoria ok", nb.name)
+PY
+rm -rf /tmp/curso-aprendizaje-smoke-curso
+mkdir -p /tmp/curso-aprendizaje-smoke-curso/libros /tmp/curso-aprendizaje-smoke-curso/semana-9
+cp materials/sample-course/notes/conceptos.md /tmp/curso-aprendizaje-smoke-curso/libros/
+echo "# Data Mining sample" > /tmp/curso-aprendizaje-smoke-curso/README.md
+printf '# semana\nPCA y K-means\n' > /tmp/curso-aprendizaje-smoke-curso/semana-9/notas.md
+python3 "$SCR/inspect_curso.py" --curso-dir /tmp/curso-aprendizaje-smoke-curso | grep -q 'perfil:'
+python3 "$SCR/libros_teoria.py" \
+  --curso-dir /tmp/curso-aprendizaje-smoke-curso --no-fetch
+test -f /tmp/curso-aprendizaje-smoke-curso/data/inventario_curso.json
+test -n "$(ls /tmp/curso-aprendizaje-smoke-curso/generated/A_solo_teoria_*.ipynb 2>/dev/null)"
+echo "libros_teoria.py ok"
+
 echo "== skill = brief aprendizaje =="
 test -f skills/curso-aprendizaje/SKILL.md
 grep -q '^name: curso-aprendizaje' skills/curso-aprendizaje/SKILL.md
@@ -64,7 +96,8 @@ test -f skills/curso-aprendizaje/procedures/aprender.md
 test -f DEFINICION-PRODUCTO.md
 
 echo "== generar A + B desde índice (núcleo pedagógico) =="
-rm -rf examples/generated
+# No borrar A_solo_teoria_* (teoría desde libros); solo regenerar A/B del sample
+rm -f examples/generated/A_conceptual_experimental_* examples/generated/B_simulacro_* examples/generated/manifest_knn-y-escalado_*.json
 python3 "$SCR/generate_learning.py" --index data/index --tema "KNN y escalado" --perfil dm --outdir examples/generated
 python3 "$SCR/generate_learning.py" --index data/index --tema "KNN y escalado" --perfil ml --outdir examples/generated
 python3 - <<'PY'

@@ -1,0 +1,116 @@
+{
+  "note": "Solo URLs de distribución legal/abierta. Libros comerciales: status=manual (tú pones el PDF que ya tengas derecho a usar).",
+  "cursos": {
+    "dm": {
+      "label": "Data Mining",
+      "entries": [
+        {
+          "id": "zaki-meira-2020",
+          "title": "Data Mining and Machine Learning (Zaki & Meira, 2020)",
+          "status": "free",
+          "format": "html_chapters",
+          "filename": "Zaki_Meira_caps_7_13_14_15_17.md",
+          "license_note": "Capítulos HTML oficiales en dataminingbook.info (uso personal; citar el libro)",
+          "chapters": [
+            {
+              "id": "chap7",
+              "label": "Cap. 7 — Dimensionality Reduction (PCA)",
+              "base_url": "https://www.dataminingbook.info/book_html/chap7"
+            },
+            {
+              "id": "chap13",
+              "label": "Cap. 13 — Representative-based Clustering (K-means)",
+              "base_url": "https://www.dataminingbook.info/book_html/chap13"
+            },
+            {
+              "id": "chap14",
+              "label": "Cap. 14 — Hierarchical Clustering",
+              "base_url": "https://www.dataminingbook.info/book_html/chap14"
+            },
+            {
+              "id": "chap15",
+              "label": "Cap. 15 — Density-based Clustering (DBSCAN)",
+              "base_url": "https://www.dataminingbook.info/book_html/chap15"
+            },
+            {
+              "id": "chap17",
+              "label": "Cap. 17 — Clustering Validation",
+              "base_url": "https://www.dataminingbook.info/book_html/chap17"
+            }
+          ],
+          "topics": [
+            {"tema": "PCA y reducción de dimensionalidad", "chapter": "chap7"},
+            {"tema": "K-means y clustering representativo", "chapter": "chap13"},
+            {"tema": "Clustering jerárquico y DBSCAN", "chapter": "chap14-15"},
+            {"tema": "Validación de clusters Silhouette Davies-Bouldin", "chapter": "chap17"}
+          ]
+        },
+        {
+          "id": "bramer-2007",
+          "title": "Principles of Data Mining (Bramer, 2007)",
+          "status": "manual",
+          "filename": "Bramer_Principles_of_Data_Mining.pdf",
+          "hint": "Coloca tu PDF legal en la carpeta libros/ del curso."
+        },
+        {
+          "id": "hernandez-orallo-2004",
+          "title": "Introducción a la minería de datos (Hernández Orallo et al., 2004)",
+          "status": "manual",
+          "filename": "Hernandez_Orallo_Mineria_de_Datos.pdf",
+          "hint": "Libro en español; coloca tu PDF legal en libros/."
+        },
+        {
+          "id": "mckinney-2017",
+          "title": "Python for Data Analysis (McKinney, 2017)",
+          "status": "manual",
+          "filename": "McKinney_Python_for_Data_Analysis.pdf",
+          "hint": "Útil para pandas; opcional para teoría."
+        }
+      ]
+    },
+    "ml": {
+      "label": "Machine Learning",
+      "entries": [
+        {
+          "id": "bishop-prml-2006",
+          "title": "Pattern Recognition and Machine Learning (Bishop, 2006)",
+          "status": "free",
+          "url": "https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf",
+          "filename": "Bishop_PRML_2006.pdf",
+          "license_note": "PDF completo liberado por Microsoft Research / autor",
+          "topics": [
+            {"tema": "Modelos lineales de regresión", "pages": "137-180"},
+            {"tema": "Descenso de gradiente y optimización", "pages": "236-250"},
+            {"tema": "K-means", "pages": "423-455"},
+            {"tema": "PCA", "pages": "559-600"}
+          ]
+        },
+        {
+          "id": "domingos-2012",
+          "title": "A few useful things to know about machine learning (Domingos, 2012)",
+          "status": "free",
+          "url": "https://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf",
+          "filename": "Domingos_Few_Useful_Things_ML_2012.pdf",
+          "license_note": "PDF del autor (UW)",
+          "topics": [
+            {"tema": "Consejos prácticos de machine learning", "pages": "1-20"}
+          ]
+        },
+        {
+          "id": "rumelhart-1986",
+          "title": "Learning representations by back-propagating errors (Rumelhart et al., 1986)",
+          "status": "manual",
+          "filename": "Rumelhart_Backpropagating_Errors_1986.pdf",
+          "hint": "Nature suele estar detrás de paywall; usa el PDF institucional si tienes acceso."
+        },
+        {
+          "id": "geron-2019",
+          "title": "Hands-On Machine Learning (Géron, 2019) — Cap. 4 Training Models",
+          "status": "manual",
+          "filename": "Geron_Hands_On_ML_ch4.pdf",
+          "hint": "Comercial O'Reilly: coloca tu PDF/ePub legal (capítulo 4: SGD / regularización)."
+        }
+      ]
+    }
+  }
+}

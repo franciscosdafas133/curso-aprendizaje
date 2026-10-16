@@ -4,5 +4,7 @@ __pycache__/
 data/
 .DS_Store
 materials/mi-curso/
+materials/libros/**
+!materials/libros/.gitkeep
 examples/generated/*
 !examples/generated/.gitkeep
