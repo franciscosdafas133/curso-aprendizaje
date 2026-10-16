@@ -263,156 +263,189 @@ No mezclar: primero comprender, después experimentar.
         + build_practica_cells(topic, hits, profile)
     )
 
-def build_product_b(topic: str, hits: list[dict], profile: str) -> tuple[list[tuple[str, str]], str]:
+def build_simulacro_teorico(topic: str, hits: list[dict]) -> tuple[list[tuple[str, str]], str]:
+    """Producto B — línea teórica (ML / cuando la asignatura evalúa teoría aparte)."""
     cites = _cite(hits)
-    blob = _concept_blob(hits)
-    excerpt = re.sub(r"\s+", " ", blob)[:400]
-
-    nb_cells: list[tuple[str, str]] = [
+    excerpt = re.sub(r"\s+", " ", _concept_blob(hits))[:450]
+    cells = [
         (
             "markdown",
-            f"""# Producto B — Simulacro (formato examen)
-**Tema ancla:** {topic}  
-**Perfil:** {profile.upper()}  
-**Instrucciones:** resuelve aquí. **No abras** el archivo de soluciones hasta terminar.
+            f"""# Simulacro TEÓRICO — {topic}
+**Instrucciones:** solo razonamiento. Sin código. No abras las soluciones hasta terminar.
+**Aviso:** preguntas *generadas para practicar* a partir del material indexado; **no** son el examen oficial del profesor.
 
-| Parte | Tipo | Puntos |
-|---|---|---|
-| A | Teoría / razonamiento | 30 |
-| B | Práctica (código) | 50 |
-| C | Interpretación | 20 |
-
-Material de apoyo (solo orientación; el examen no copia diapositivas):
+Citas de apoyo (no las copies como respuesta):
 {cites}
 """,
         ),
         (
             "markdown",
-            f"""# Parte A — Teoría (30 pts)
-
-### A1 (15 pts)
-Con base en el material indexado sobre «{topic}», explica el mecanismo central en tus palabras.
-Fragmento recuperado (no lo copies literal en la respuesta final; razona):
+            f"""### T1 (25 pts) — Mecanismo
+Explica con rigor cómo funciona «{topic}». Incluye supuestos.
+Fragmento recuperado (orientación):
 > {excerpt}…
-
-### A2 (15 pts)
-Describe una consecuencia práctica (qué pasa si ignoras este concepto al programar o al evaluar un modelo).
 """,
         ),
-        ("markdown", "*(respuesta A1)*\n"),
-        ("markdown", "*(respuesta A2)*\n"),
+        ("markdown", "*(T1)*\n"),
         (
             "markdown",
-            """# Parte B — Práctica (50 pts)
-Escribe código. No uses el archivo de soluciones.
+            """### T2 (25 pts) — Comparación
+Compara este enfoque con una alternativa del temario. ¿Cuándo preferirías cada uno?
+""",
+        ),
+        ("markdown", "*(T2)*\n"),
+        (
+            "markdown",
+            """### T3 (25 pts) — Consecuencias
+Si cambias un parámetro o condición clave, ¿qué pasa y por qué?
+""",
+        ),
+        ("markdown", "*(T3)*\n"),
+        (
+            "markdown",
+            """### T4 (25 pts) — Situación nueva
+Describe un escenario *no idéntico* al de clase y razona la respuesta correcta.
+""",
+        ),
+        ("markdown", "*(T4)*\n"),
+    ]
+    sol = f"""# Soluciones — simulacro TEÓRICO «{topic}»
+Anclar a citas del índice. No inventar “pregunta oficial”.
+{cites}
+Generado: {datetime.now(timezone.utc).isoformat()}
+"""
+    return cells, sol
+
+
+def build_simulacro_practico(topic: str, hits: list[dict], profile: str) -> tuple[list[tuple[str, str]], str]:
+    """Producto B — línea práctica (DM principal; también ML práctica)."""
+    cites = _cite(hits)
+    cells = [
+        (
+            "markdown",
+            f"""# Simulacro PRÁCTICO — {topic}
+**Perfil:** {profile.upper()}  
+**Instrucciones:** código + interpretación. Sin mirar soluciones.
+**Aviso:** práctica generada desde el índice; no es el examen oficial.
+
+Citas:
+{cites}
+""",
+        ),
+        (
+            "markdown",
+            """### P1 (40 pts) — Implementación
+Resuelve el problema en código de forma autónoma (no copies un ejemplo de clase al pie de la letra).
 """,
         ),
         (
             "code",
-            f"""# B1 (50 pts) — implementa una comprobación relacionada con: {topic!r}
-# Debe correr y dejar un print interpretable.
-# TODO: tu solución
-raise NotImplementedError("completa B1")
+            f"""# P1 — {topic!r}
+# TODO
+raise NotImplementedError("completa P1")
 """,
         ),
         (
             "markdown",
-            """# Parte C — Interpretación (20 pts)
-### C1
-Si el resultado de B1 sale distinto a lo que esperabas según el material, ¿qué revisarías primero (datos, escala, split, métrica, k, …)? Justifica.
+            """### P2 (30 pts) — Interpretación
+Interpreta la salida. ¿Qué decisión de modelado/datos justifica el resultado?
 """,
         ),
-        ("markdown", "*(respuesta C1)*\n"),
+        ("markdown", "*(P2)*\n"),
+        (
+            "markdown",
+            """### P3 (30 pts) — Justificación
+Si te pidieran cambiar una decisión (escala, k, split, métrica…), ¿cuál y por qué?
+""",
+        ),
+        ("markdown", "*(P3)*\n"),
     ]
-
-    sol = f"""# Soluciones — simulacro «{topic}» (abrir solo al final)
-
-## A1 / A2
-Deben anclarse a las citas del índice. No inventar “pregunta oficial del profesor”.
-Citas usadas al generar:
+    sol = f"""# Soluciones — simulacro PRÁCTICO «{topic}»
+Ver experimentos alineados (KNN/escala, overfitting, k-means) según el tema.
+Citas:
 {cites}
-
-## B1
-Depende del tema. Si el tema habla de escala/KNN, compara KNN con/sin StandardScaler.
-Si habla de sobreajuste, compara árbol profundo vs poco profundo (gap train−test).
-Si habla de clustering, muestra inertias para varios k.
-
-## C1
-Priorizar diagnósticos alineados al concepto (p. ej. escala en modelos por distancia; profundidad en árboles; elección de k).
-
 Generado: {datetime.now(timezone.utc).isoformat()}
 """
-    return nb_cells, sol
+    return cells, sol
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Genera Producto A y B desde el índice del curso")
-    ap.add_argument("--index", required=True, help="Carpeta data/index")
-    ap.add_argument("--tema", required=True, help="Tema / unidad a estudiar")
+    ap = argparse.ArgumentParser(description="Genera Producto A y B desde el índice (brief aprendizaje)")
+    ap.add_argument("--index", required=True)
+    ap.add_argument("--tema", required=True)
     ap.add_argument("--perfil", choices=("dm", "ml"), default="dm")
-    ap.add_argument("--outdir", required=True, help="Carpeta de salida (ej. examples/generated)")
+    ap.add_argument("--outdir", required=True)
     ap.add_argument("--top", type=int, default=6)
-    ap.add_argument(
-        "--solo-a",
-        action="store_true",
-        help="Solo Producto A (cuaderno conceptual-experimental)",
-    )
-    ap.add_argument(
-        "--solo-b",
-        action="store_true",
-        help="Solo Producto B (simulacro)",
-    )
+    ap.add_argument("--solo-a", action="store_true")
+    ap.add_argument("--solo-b", action="store_true")
     args = ap.parse_args()
 
     hits = query(Path(args.index), args.tema, top_k=args.top, min_score=0.03)
     if not hits:
-        print("ERROR: el índice no devolvió hits para ese tema. Reingesta/indexa o reformula.", file=sys.stderr)
+        print("ERROR: sin hits en el índice para ese tema.", file=sys.stderr)
         return 2
 
     out = Path(args.outdir)
     out.mkdir(parents=True, exist_ok=True)
     slug = _slug(args.tema)
-    manifest = {
-        "tema": args.tema,
-        "perfil": args.perfil,
-        "hits": [{"source": h.get("source"), "locator": h.get("locator"), "score": h.get("score")} for h in hits],
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-    }
-
+    paths: list[str] = []
     do_a = not args.solo_b
     do_b = not args.solo_a
 
-    paths = []
+    # Aprendizaje: teoría y práctica CONECTADAS (Producto A conceptual-experimental)
     if do_a:
-        if args.perfil == "ml":
-            # ML: teoría y práctica en artefactos SEPARADOS (como el brief original)
-            path_t = out / f"A1_teoria_{slug}_ml.ipynb"
-            path_p = out / f"A2_practica_{slug}_ml.ipynb"
-            _write_nb(path_t, build_teoria_cells(args.tema, hits, "ml"))
-            _write_nb(path_p, build_practica_cells(args.tema, hits, "ml"))
-            paths.extend([str(path_t), str(path_p)])
-            print(f"Producto A1 TEORÍA  → {path_t}")
-            print(f"Producto A2 PRÁCTICA → {path_p}")
-        else:
-            path_a = out / f"A_teoria_luego_practica_{slug}_dm.ipynb"
-            _write_nb(path_a, build_product_a(args.tema, hits, "dm"))
-            paths.append(str(path_a))
-            print(f"Producto A (teoría→práctica) → {path_a}")
+        path_a = out / f"A_conceptual_experimental_{slug}_{args.perfil}.ipynb"
+        _write_nb(path_a, build_product_a(args.tema, hits, args.perfil))
+        paths.append(str(path_a))
+        print(f"Producto A (aprender: teoría→experimento conectados) → {path_a}")
 
+    # Evaluación: perfiles distintos (brief §5)
     if do_b:
-        cells_b, sol = build_product_b(args.tema, hits, args.perfil)
-        path_b = out / f"B_simulacro_{slug}_{args.perfil}.ipynb"
-        path_sol = out / f"B_simulacro_{slug}_{args.perfil}_SOLUCIONES.md"
-        _write_nb(path_b, cells_b)
-        path_sol.write_text(sol, encoding="utf-8")
-        paths.extend([str(path_b), str(path_sol)])
-        print(f"Producto B → {path_b}")
-        print(f"Soluciones  → {path_sol}")
+        if args.perfil == "ml":
+            # ML: simulacro teórico Y práctico SEPARADOS
+            ct, st = build_simulacro_teorico(args.tema, hits)
+            cp, sp = build_simulacro_practico(args.tema, hits, "ml")
+            pt = out / f"B_simulacro_TEORICO_{slug}_ml.ipynb"
+            pst = out / f"B_simulacro_TEORICO_{slug}_ml_SOLUCIONES.md"
+            pp = out / f"B_simulacro_PRACTICO_{slug}_ml.ipynb"
+            psp = out / f"B_simulacro_PRACTICO_{slug}_ml_SOLUCIONES.md"
+            _write_nb(pt, ct)
+            pst.write_text(st, encoding="utf-8")
+            _write_nb(pp, cp)
+            psp.write_text(sp, encoding="utf-8")
+            paths.extend([str(pt), str(pst), str(pp), str(psp)])
+            print(f"Producto B teórico  → {pt}")
+            print(f"Producto B práctico → {pp}")
+        else:
+            # DM: evaluación principalmente práctica
+            cp, sp = build_simulacro_practico(args.tema, hits, "dm")
+            pp = out / f"B_simulacro_PRACTICO_{slug}_dm.ipynb"
+            psp = out / f"B_simulacro_PRACTICO_{slug}_dm_SOLUCIONES.md"
+            _write_nb(pp, cp)
+            psp.write_text(sp, encoding="utf-8")
+            paths.extend([str(pp), str(psp)])
+            print(f"Producto B práctico (DM) → {pp}")
 
     man = out / f"manifest_{slug}_{args.perfil}.json"
-    manifest["artifacts"] = paths
-    man.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"manifest   → {man}")
+    man.write_text(
+        json.dumps(
+            {
+                "tema": args.tema,
+                "perfil": args.perfil,
+                "metodo": "aprender conectado (A); evaluar según perfil (B)",
+                "hits": [
+                    {"source": h.get("source"), "locator": h.get("locator"), "score": h.get("score")}
+                    for h in hits
+                ],
+                "artifacts": paths,
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    print(f"manifest → {man}")
     return 0
 
 

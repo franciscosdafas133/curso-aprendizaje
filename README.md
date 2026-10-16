@@ -1,17 +1,19 @@
 # curso-aprendizaje
 
-Skill de Cursor: **método de aprendizaje** para Data Mining y Machine Learning.
+Skill Cursor: **sistema de aprendizaje** para Data Mining y Machine Learning (brief del dueño).
 
-## Método (núcleo)
+## Productos
 
-```text
-1) TEORÍA  →  2) PRÁCTICA / experimento  →  3) SIMULACRO de examen
-```
+| | Qué |
+|---|---|
+| **A** | Cuaderno conceptual-experimental (teoría coloquial→rigor + experimento con propósito) |
+| **B (DM)** | Simulacro **práctico** |
+| **B (ML)** | Simulacro **teórico** + simulacro **práctico** (separados) |
 
-- **DM:** un cuaderno con teoría y luego práctica.
-- **ML:** cuaderno de teoría **aparte** + cuaderno de práctica **aparte** + simulacro.
+Aprender: teoría y práctica **conectadas** (A).  
+Evaluar: según perfil (B).
 
-La extracción/índice/OCR/web son infraestructura. Lo que importa es generar **Producto A** y **Producto B** desde tus materiales.
+Infra (extract/OCR/índice/web) sirve para anclar al material; no es el producto.
 
 ## Instalar
 
@@ -21,20 +23,13 @@ cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.cursor/skills/curso-aprendiz
 pip install -r curso-aprendizaje/requirements.txt
 ```
 
-Chat: `Usa curso-aprendizaje.`
-
-## Generar material de un tema
+## Generar
 
 ```bash
-cd curso-aprendizaje && source .venv/bin/activate
 python3 skills/curso-aprendizaje/scripts/extract.py --input materials/sample-course --out data/chunks.json
 python3 skills/curso-aprendizaje/scripts/build_index.py --chunks data/chunks.json --outdir data/index
 python3 skills/curso-aprendizaje/scripts/generate_learning.py \
-  --index data/index --tema "KNN y escalado" --perfil dm --outdir examples/generated
+  --index data/index --tema "KNN y escalado" --perfil ml --outdir examples/generated
 ```
 
-## Probar
-
-```bash
-bash comprobar.sh
-```
+Ver `DEFINICION-PRODUCTO.md`. Probar: `bash comprobar.sh`.

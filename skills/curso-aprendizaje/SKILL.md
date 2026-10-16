@@ -1,57 +1,62 @@
 ---
 name: curso-aprendizaje
 description: >-
-  Método de aprendizaje DM/ML en Cursor: TEORÍA primero, luego PRÁCTICA/experimento,
-  luego simulacro de examen. Genera cuadernos desde el índice de tus PPT/PDF.
-  Usar para estudiar o prepararse — no como resumidor ni solo como indexador.
+  Sistema inteligente de aprendizaje DM/ML en Cursor: transforma materiales del
+  curso en Producto A (cuaderno conceptual-experimental) y Producto B (simulacros
+  de evaluación). Aprender: teoría y práctica conectadas. Evaluar: según perfil
+  (DM práctico; ML teórico + práctico separados). No es un resumidor.
 ---
 
 # curso-aprendizaje
 
-## El método (esto es lo importante)
+## Qué es (brief del dueño)
 
-Orden fijo — **no lo inviertas**:
+No es chatbot ni resumidor. Es un skill que, con **tus** PPT/PDF/apuntes/notebooks:
+
+1. Inspecciona materiales e identifica conceptos / relaciones / dificultades / qué se evalúa.
+2. Decide qué experiencias generar (no maximizar archivos).
+3. Entrega **Producto A** y **Producto B**.
+
+### Producto A — Cuaderno conceptual y experimental (`.ipynb`)
+- Explicación pedagógica (coloquial → rigor → conexiones), no resumen de diapositivas.
+- Experimento **con propósito** cuando aporte; si no, otra vía (demo, diagrama…).
+- Predicción → observación → interpretación.
+
+### Producto B — Simulacros
+- Exigentes, basados en materiales; **no** fingir “examen oficial del profesor”.
+- Soluciones **aparte**.
+- **Data Mining:** simulacro principalmente **práctico**.
+- **Machine Learning:** simulacro **teórico** + simulacro **práctico** (separados en evaluación; conectados en el aprendizaje vía A).
+
+## Método
 
 ```text
-1) TEORÍA     → comprender (coloquial → rigor → conexiones)
-2) PRÁCTICA   → experimento con propósito + reflexión
-3) SIMULACRO  → examen (teoría + práctica + interpretación), soluciones aparte
+APRENDER:  materiales → índice → Producto A (teoría + experimento conectados)
+EVALUAR:   DM → B práctico | ML → B teórico + B práctico (sin soluciones a la vista)
 ```
 
-| Perfil | Cómo se entrega |
-|---|---|
-| **Data Mining (`dm`)** | Un cuaderno A: teoría → práctica en ese orden |
-| **Machine Learning (`ml`)** | A1 teoría **separada** + A2 práctica **separada** (como evaluación real) |
-| Ambos | Producto B = simulacro formato examen |
-
-La ingesta/OCR/índice/web son **infra**. El producto son los cuadernos de aprendizaje.
+Ingesta/OCR/índice/web = infraestructura. El valor es A y B.
 
 ## Flujo del agente
 
-1. Indexar materiales si falta `data/index/`.
+1. Indexar si falta `data/index/`.
 2. Consultar índice del tema.
-3. Generar con `generate_learning.py` (no sustituyas por plantillas fijas de `templates/`).
-4. Guiar: **terminar teoría → luego práctica → luego simulacro sin soluciones**.
-5. Distinguir: material indexado / propuesta pedagógica / web / hueco.
+3. `generate_learning.py --perfil dm|ml` → genera A y B según perfil.
+4. Guiar estudio de A; luego simulacro(s) sin abrir soluciones.
+5. Etiquetar: material indexado / propuesta pedagógica / web / hueco.
+6. Razonar cómo enseñar cada concepto (no plantilla rígida siempre igual).
 
 ## Comandos
 
 ```bash
-source .venv/bin/activate
-pip install -r requirements.txt   # una vez
-
 python3 skills/curso-aprendizaje/scripts/extract.py --input materials/… --out data/chunks.json
 python3 skills/curso-aprendizaje/scripts/build_index.py --chunks data/chunks.json --outdir data/index
-
-# Núcleo: genera teoría→práctica (+ simulacro)
 python3 skills/curso-aprendizaje/scripts/generate_learning.py \
-  --index data/index --tema "KNN y escalado" --perfil dm --outdir examples/generated
-
-# ML (teoría y práctica en archivos distintos)
-python3 skills/curso-aprendizaje/scripts/generate_learning.py \
-  --index data/index --tema "KNN y escalado" --perfil ml --outdir examples/generated
+  --index data/index --tema "KNN y escala" --perfil ml --outdir examples/generated
 ```
 
-## Procedimientos
+## Principios
+Comprensión > acumulación · conexión · experimento con propósito · rigor · citar procedencia · autonomía · Jupyter primero.
 
-`procedures/aprender.md` · `ingestar.md` · `indexar-consultar.md` · `web-y-generar.md`
+## Procedimientos
+`aprender.md` · `ingestar.md` · `indexar-consultar.md` · `web-y-generar.md`

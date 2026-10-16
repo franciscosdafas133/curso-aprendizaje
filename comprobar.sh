@@ -55,14 +55,15 @@ assert any("wikipedia" in (r.get("url") or "").lower() and not r.get("accepted")
 print("accepted", len(acc), "rejected", len(rej))
 PY
 
-echo "== skill = método teoría→práctica =="
+echo "== skill = brief aprendizaje =="
 test -f skills/curso-aprendizaje/SKILL.md
 grep -q '^name: curso-aprendizaje' skills/curso-aprendizaje/SKILL.md
-grep -q 'TEORÍA' skills/curso-aprendizaje/SKILL.md
+grep -q 'Producto A' skills/curso-aprendizaje/SKILL.md
 grep -q 'generate_learning.py' skills/curso-aprendizaje/SKILL.md
 test -f skills/curso-aprendizaje/procedures/aprender.md
+test -f DEFINICION-PRODUCTO.md
 
-echo "== generar aprendizaje desde índice (núcleo) =="
+echo "== generar A + B desde índice (núcleo pedagógico) =="
 rm -rf examples/generated
 python3 "$SCR/generate_learning.py" --index data/index --tema "KNN y escalado" --perfil dm --outdir examples/generated
 python3 "$SCR/generate_learning.py" --index data/index --tema "KNN y escalado" --perfil ml --outdir examples/generated
@@ -70,25 +71,23 @@ python3 - <<'PY'
 from pathlib import Path
 import json
 gen = Path("examples/generated")
-dm = list(gen.glob("A_teoria_luego_practica_*_dm.ipynb"))
-assert dm, "falta cuaderno DM teoría→práctica"
-nb = json.loads(dm[0].read_text())
-text = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
+# DM: A conceptual-experimental + B práctico
+a_dm = list(gen.glob("A_conceptual_experimental_*_dm.ipynb"))
+b_dm = list(gen.glob("B_simulacro_PRACTICO_*_dm.ipynb"))
+assert a_dm and b_dm
+text = "\n".join("".join(c.get("source", [])) for c in json.loads(a_dm[0].read_text())["cells"])
 assert "FASE 1 — TEORÍA" in text and "FASE 2 — PRÁCTICA" in text
 assert text.index("FASE 1 — TEORÍA") < text.index("FASE 2 — PRÁCTICA")
-a1 = list(gen.glob("A1_teoria_*_ml.ipynb"))
-a2 = list(gen.glob("A2_practica_*_ml.ipynb"))
-b = list(gen.glob("B_simulacro_*_dm.ipynb"))
-sol = list(gen.glob("B_simulacro_*_dm_SOLUCIONES.md"))
-assert a1 and a2 and b and sol
-cells_t = json.loads(a1[0].read_text())["cells"]
-cells_p = json.loads(a2[0].read_text())["cells"]
-t1 = "\n".join("".join(c.get("source", [])) for c in cells_t)
-t2 = "\n".join("".join(c.get("source", [])) for c in cells_p)
-assert "FASE 1 — TEORÍA" in t1 and "FASE 2 — PRÁCTICA" in t2
-assert not any(c.get("cell_type") == "code" for c in cells_t), "teoría ML no debe tener celdas de código"
-assert any(c.get("cell_type") == "code" for c in cells_p), "práctica ML debe tener código"
-print("generacion A/B ok", dm[0].name, a1[0].name, a2[0].name)
+# ML: A conectado + B teórico + B práctico separados
+a_ml = list(gen.glob("A_conceptual_experimental_*_ml.ipynb"))
+bt = list(gen.glob("B_simulacro_TEORICO_*_ml.ipynb"))
+bp = list(gen.glob("B_simulacro_PRACTICO_*_ml.ipynb"))
+assert a_ml and bt and bp
+cells_teo = json.loads(bt[0].read_text())["cells"]
+assert not any(c.get("cell_type") == "code" for c in cells_teo)
+cells_prac = json.loads(bp[0].read_text())["cells"]
+assert any(c.get("cell_type") == "code" for c in cells_prac)
+print("ok", a_dm[0].name, b_dm[0].name, a_ml[0].name, bt[0].name, bp[0].name)
 PY
 
 echo "== experimentos corren =="
