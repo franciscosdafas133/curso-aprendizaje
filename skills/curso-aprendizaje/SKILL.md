@@ -1,72 +1,77 @@
 ---
 name: curso-aprendizaje
 description: >-
-  Sistema inteligente de aprendizaje DM/ML en Cursor: materiales → Producto A
-  (cuaderno) y Producto B (simulacros). Incluye flujo general libros→solo teoría
-  (fetch legal + índice + notebook) usable en cualquier carpeta de curso.
-  No es un resumidor.
+  Sistema de aprendizaje DM/ML en Cursor. Si el workspace es una carpeta de
+  curso, inspecciona TODO lo que hay ahí, detecta DM/ML, descarga lecturas
+  libres a libros/ de ESA carpeta y genera teoría/práctica. No es un resumidor.
 ---
 
 # curso-aprendizaje
 
-## Qué es (brief del dueño)
+## Dónde opera (importante)
 
-No es chatbot ni resumidor. Es un skill que, con **tus** PPT/PDF/apuntes/notebooks:
+La skill trabaja sobre **la carpeta abierta en Cursor** (workspace), no sobre el repo de GitHub.
 
-1. Inspecciona materiales e identifica conceptos / relaciones / dificultades / qué se evalúa.
-2. Decide qué experiencias generar (no maximizar archivos).
-3. Entrega **Producto A** y **Producto B**.
+```text
+Workspace = tu curso (ej. ~/Documents/Data_Mining)
+         → inspección
+         → descarga a ./libros/   ← aquí, en tu curso
+         → índice en ./data/
+         → notebooks en ./generated/
+```
 
-### Producto A — Cuaderno conceptual y experimental (`.ipynb`)
-- Explicación pedagógica (coloquial → rigor → conexiones), no resumen de diapositivas.
-- Experimento **con propósito** cuando aporte; si no, otra vía (demo, diagrama…).
-- Predicción → observación → interpretación.
+GitHub solo sirve para **instalar/actualizar** la skill en `~/.cursor/skills/curso-aprendizaje`.  
+Después, al pedir teoría/aprendizaje con esta carpeta abierta, el agente ejecuta los scripts **contra el workspace actual**.
+
+## Flujo del agente (obligatorio en carpeta de curso)
+
+Cuando el usuario pida teoría, libros, aprender, o use esta skill y el workspace parezca un curso (`libros/`, `semana-*`, `silabo/`, o nombre Data_Mining / Machine_Learning):
+
+1. `CURSO_DIR` = raíz del workspace (`.` / `$PWD` del proyecto abierto).
+2. Localizar scripts en este orden:
+   - `~/.cursor/skills/curso-aprendizaje/scripts/`
+   - si no, `skills/curso-aprendizaje/scripts/` dentro del repo skill.
+3. Correr **sin pedirle al usuario que clone nada**:
+
+```bash
+python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir "$CURSO_DIR"
+```
+
+Eso ya: inspecciona materiales → detecta perfil → **descarga libres a `$CURSO_DIR/libros`** → indexa → genera `generated/A_solo_teoria_*.ipynb`.
+
+4. Mostrar inventario (`data/inventario_curso.json`) y el notebook generado.
+5. Si pide también práctica/simulacro, usar el mismo índice / materiales del curso con `generate_learning.py` (Producto A/B).
+
+No descargar en el clone de GitHub. No pedir `--curso-dir` a otra ruta si ya están en el curso.
+
+## Productos
+
+### Producto A — Cuaderno conceptual-experimental (o solo teoría)
+- Coloquial → rigor → conexiones; experimento con propósito si aplica.
+- Con `--solo-teoria` (vía `libros_teoria.py`): solo teoría desde materiales/libros.
 
 ### Producto B — Simulacros
-- Exigentes, basados en materiales; **no** fingir “examen oficial del profesor”.
-- Soluciones **aparte**.
-- **Data Mining:** simulacro principalmente **práctico**.
-- **Machine Learning:** simulacro **teórico** + simulacro **práctico** (separados en evaluación; conectados en el aprendizaje vía A).
+- DM: práctico. ML: teórico + práctico. Soluciones aparte. No fingir examen oficial.
 
 ## Método
 
 ```text
-APRENDER:  materiales → índice → Producto A (teoría + experimento conectados)
-EVALUAR:   DM → B práctico | ML → B teórico + B práctico (sin soluciones a la vista)
+CARPETA DEL CURSO → inspeccionar → (fetch a ./libros) → índice → A (teoría[+práctica]) → B
 ```
 
-Ingesta/OCR/índice/web = infraestructura. El valor es A y B.
-
-## Flujo del agente
-
-1. Indexar si falta `data/index/`.
-2. Consultar índice del tema.
-3. `generate_learning.py --perfil dm|ml` → genera A y B según perfil.
-4. Guiar estudio de A; luego simulacro(s) sin abrir soluciones.
-5. Etiquetar: material indexado / propuesta pedagógica / web / hueco.
-6. Razonar cómo enseñar cada concepto (no plantilla rígida siempre igual).
-
-## Comandos
+## Comandos auxiliares
 
 ```bash
-python3 skills/curso-aprendizaje/scripts/extract.py --input materials/… --out data/chunks.json
-python3 skills/curso-aprendizaje/scripts/build_index.py --chunks data/chunks.json --outdir data/index
-python3 skills/curso-aprendizaje/scripts/generate_learning.py \
-  --index data/index --tema "KNN y escala" --perfil ml --outdir examples/generated
+# Solo inventario
+python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir . --inspect-only
+
+# A+B clásico si ya hay índice
+python3 ~/.cursor/skills/curso-aprendizaje/scripts/generate_learning.py \
+  --index ./data/index_curso --tema "…" --perfil dm|ml --outdir ./generated
 ```
-
-### Solo teoría (inspecciona la carpeta del curso)
-
-```bash
-# Desde la raíz de tu curso (Data_Mining, Machine_Learning, …)
-python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir .
-```
-
-Auto: detecta DM/ML, lista materiales/libros/sílabo/semanas, descarga libres si faltan, indexa y genera `generated/A_solo_teoria_*.ipynb`.  
-Procedimiento: `libros-teoria.md`.
 
 ## Principios
-Comprensión > acumulación · conexión · experimento con propósito · rigor · citar procedencia · autonomía · Jupyter primero.
+Comprensión > acumulación · anclar a materiales del curso abierto · citar procedencia · Jupyter primero.
 
 ## Procedimientos
 `aprender.md` · `ingestar.md` · `indexar-consultar.md` · `web-y-generar.md` · `libros-teoria.md`

@@ -1,39 +1,32 @@
-# Inspeccionar curso → solo teoría
+# Inspeccionar curso abierto → descargar aquí → solo teoría
 
-La skill **mira toda la carpeta del curso**, detecta si es DM o ML, inventaría materiales/libros/sílabo/semanas y genera un cuaderno solo teórico.
+## Idea
+No bajas libros “en la skill/repo”. Los bajas **en la carpeta del curso que tienes abierta**.
 
-## Uso (recomendado)
-
-```bash
-python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py \
-  --curso-dir .
-```
-
-Desde GitHub / clone:
+## Qué hace el agente
+Con el workspace = tu curso:
 
 ```bash
-python3 skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir /ruta/a/tu-curso
+python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir .
 ```
 
-Qué hace:
-1. Inspecciona archivos (`inspect_curso.py`) → perfil + temas + inventario JSON
-2. Descarga lecturas libres del catálogo a `libros/` (salvo `--no-fetch`)
-3. Extrae texto de **todo el curso** (semanas, sílabo, libros, notebooks…)
-4. Indexa y genera `generated/A_solo_teoria_*.ipynb`
+1. Inspecciona **todo** lo de esta carpeta (semanas, sílabo, libros, notebooks…).
+2. Detecta perfil `dm` / `ml`.
+3. Descarga lecturas libres a **`./libros/`** (esta carpeta).
+4. Indexa en `./data/`.
+5. Genera `./generated/A_solo_teoria_*.ipynb`.
 
-## Opciones útiles
+## Cómo lo usas tú
+1. Abre en Cursor `Data_Mining` o `Machine_Learning` (File → Open Folder).
+2. Pide: “usa curso-aprendizaje / genera teoría desde mis materiales y libros”.
+3. La skill corre el comando de arriba sobre **esta** carpeta.
+
+## Flags
 
 | Flag | Efecto |
 |---|---|
-| `--inspect-only` | Solo inventario, no genera |
-| `--tema "…"` | Fuerza el tema |
-| `--perfil dm\|ml` | Fuerza el perfil |
-| `--solo-libros` | Indexa solo `libros/` |
-| `--no-fetch` | No descarga del catálogo |
-| `--pages 137-180` | Limita páginas de PDF |
-
-## Salidas en el curso
-
-- `data/inventario_curso.json` — qué encontró
-- `data/chunks_curso.json` / `data/index_curso/` — índice
-- `generated/A_solo_teoria_*.ipynb` — teoría
+| `--inspect-only` | Solo inventario |
+| `--tema "…"` | Fuerza tema |
+| `--perfil dm\|ml` | Fuerza perfil |
+| `--solo-libros` | Solo indexa `libros/` |
+| `--no-fetch` | No descarga |
