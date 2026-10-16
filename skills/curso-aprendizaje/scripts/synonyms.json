@@ -1,0 +1,43 @@
+{
+  "escalado": [
+    "normalizacion",
+    "normalización",
+    "standardization",
+    "estandarizacion",
+    "feature scaling",
+    "scale"
+  ],
+  "normalizacion": [
+    "escalado",
+    "standardization",
+    "estandarizacion",
+    "feature scaling"
+  ],
+  "overfitting": [
+    "sobreajuste",
+    "sobre-ajuste",
+    "memorizacion",
+    "memorización del train"
+  ],
+  "sobreajuste": [
+    "overfitting",
+    "memorizacion"
+  ],
+  "knn": [
+    "k-nearest neighbors",
+    "vecinos cercanos",
+    "vecino mas cercano",
+    "k nearest"
+  ],
+  "clustering": [
+    "agrupamiento",
+    "k-means",
+    "kmeans",
+    "clusters"
+  ],
+  "k-means": [
+    "kmeans",
+    "clustering",
+    "agrupamiento"
+  ]
+}

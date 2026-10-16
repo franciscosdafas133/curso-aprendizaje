@@ -1,0 +1,9 @@
+python-pptx
+pymupdf
+pillow
+numpy
+scikit-learn
+requests
+pytesseract
+rapidocr-onnxruntime
+onnxruntime
