@@ -1,52 +1,57 @@
 ---
 name: curso-aprendizaje
 description: >-
-  Skill para cursos de Data Mining y Machine Learning: extrae PPT/PDF (con OCR
-  si la diapositiva/página es imagen), indexa conceptos con sinónimos, filtra
-  material online por relevancia, genera cuadernos experimentales y simulacros
-  con formato de examen. Usar cuando el usuario aporte materiales de curso o
-  pida estudiar/preparar evaluación DM/ML en Cursor.
+  Método de aprendizaje DM/ML en Cursor: TEORÍA primero, luego PRÁCTICA/experimento,
+  luego simulacro de examen. Genera cuadernos desde el índice de tus PPT/PDF.
+  Usar para estudiar o prepararse — no como resumidor ni solo como indexador.
 ---
 
 # curso-aprendizaje
 
-Transforma materiales de **Data Mining** / **Machine Learning** en aprendizaje usable.
+## El método (esto es lo importante)
 
-## Flujo (obligatorio)
+Orden fijo — **no lo inviertas**:
 
-1. **Ingestar** materiales del curso (`scripts/extract.py`) — OCR si hay imagen.
-2. **Indexar** (`scripts/build_index.py`) — TF-IDF + sinónimos (no solo keyword).
-3. **Consultar** el índice antes de explicar (`scripts/query_index.py`).
-4. **Web opcional** (`scripts/search_web.py`) — filtrar relevancia; citar URL; nunca como “del profesor”.
-5. **Generar** desde `templates/experiments/` y `templates/exam/` (adaptar al retrieve).
-6. Distinguir en tu respuesta: (a) material indexado (b) propuesta pedagógica (c) web (d) hueco.
+```text
+1) TEORÍA     → comprender (coloquial → rigor → conexiones)
+2) PRÁCTICA   → experimento con propósito + reflexión
+3) SIMULACRO  → examen (teoría + práctica + interpretación), soluciones aparte
+```
+
+| Perfil | Cómo se entrega |
+|---|---|
+| **Data Mining (`dm`)** | Un cuaderno A: teoría → práctica en ese orden |
+| **Machine Learning (`ml`)** | A1 teoría **separada** + A2 práctica **separada** (como evaluación real) |
+| Ambos | Producto B = simulacro formato examen |
+
+La ingesta/OCR/índice/web son **infra**. El producto son los cuadernos de aprendizaje.
+
+## Flujo del agente
+
+1. Indexar materiales si falta `data/index/`.
+2. Consultar índice del tema.
+3. Generar con `generate_learning.py` (no sustituyas por plantillas fijas de `templates/`).
+4. Guiar: **terminar teoría → luego práctica → luego simulacro sin soluciones**.
+5. Distinguir: material indexado / propuesta pedagógica / web / hueco.
 
 ## Comandos
 
-Desde la raíz del proyecto de curso (ajusta rutas):
-
 ```bash
-source .venv/bin/activate  # si existe
-python3 skills/curso-aprendizaje/scripts/extract.py \
-  --input materials/sample-course --out data/chunks.json
-python3 skills/curso-aprendizaje/scripts/build_index.py \
-  --chunks data/chunks.json --outdir data/index
-python3 skills/curso-aprendizaje/scripts/query_index.py \
-  --index data/index --q "normalización en vecinos cercanos"
-python3 skills/curso-aprendizaje/scripts/search_web.py \
-  --q "KNN feature scaling sklearn" --out data/web.json --offline-demo
-python3 skills/curso-aprendizaje/scripts/make_templates.py
+source .venv/bin/activate
+pip install -r requirements.txt   # una vez
+
+python3 skills/curso-aprendizaje/scripts/extract.py --input materials/… --out data/chunks.json
+python3 skills/curso-aprendizaje/scripts/build_index.py --chunks data/chunks.json --outdir data/index
+
+# Núcleo: genera teoría→práctica (+ simulacro)
+python3 skills/curso-aprendizaje/scripts/generate_learning.py \
+  --index data/index --tema "KNN y escalado" --perfil dm --outdir examples/generated
+
+# ML (teoría y práctica en archivos distintos)
+python3 skills/curso-aprendizaje/scripts/generate_learning.py \
+  --index data/index --tema "KNN y escalado" --perfil ml --outdir examples/generated
 ```
-
-## Perfiles
-
-- **Data Mining:** énfasis práctica notebook + decisiones al programar.
-- **Machine Learning:** teoría + práctica (simulacro con partes separadas).
-
-## Material real del usuario
-
-Copia (localmente) a `materials/mi-curso/` sin subir PDFs privados a repos públicos. Vuelve a extract → index.
 
 ## Procedimientos
 
-Lee `procedures/` según la acción.
+`procedures/aprender.md` · `ingestar.md` · `indexar-consultar.md` · `web-y-generar.md`

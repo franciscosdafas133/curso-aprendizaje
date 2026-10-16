@@ -4,3 +4,5 @@ __pycache__/
 data/
 .DS_Store
 materials/mi-curso/
+examples/generated/*
+!examples/generated/.gitkeep

@@ -1,54 +1,40 @@
 # curso-aprendizaje
 
-Skill de Cursor para **Data Mining** y **Machine Learning**: extrae PPT/PDF (con OCR si hay imagen), índice con sinónimos, web filtrada, cuadernos experimentales y simulacros tipo examen.
+Skill de Cursor: **método de aprendizaje** para Data Mining y Machine Learning.
 
-## Instalar en Cursor (cualquier carpeta de curso)
+## Método (núcleo)
+
+```text
+1) TEORÍA  →  2) PRÁCTICA / experimento  →  3) SIMULACRO de examen
+```
+
+- **DM:** un cuaderno con teoría y luego práctica.
+- **ML:** cuaderno de teoría **aparte** + cuaderno de práctica **aparte** + simulacro.
+
+La extracción/índice/OCR/web son infraestructura. Lo que importa es generar **Producto A** y **Producto B** desde tus materiales.
+
+## Instalar
 
 ```bash
 git clone https://github.com/franciscosdafas133/curso-aprendizaje.git
 cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.cursor/skills/curso-aprendizaje
+pip install -r curso-aprendizaje/requirements.txt
 ```
 
-Reinicia Cursor. En el chat de **cualquier proyecto**:
+Chat: `Usa curso-aprendizaje.`
 
-```
-Usa curso-aprendizaje.
-Ingresa materials/… (o la carpeta de mis apuntes), indexa y ayúdame con [tema].
-```
-
-Si no aparece `/curso-aprendizaje`, el texto de arriba basta.
-
-## Dependencias (en el proyecto donde trabajes)
+## Generar material de un tema
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+cd curso-aprendizaje && source .venv/bin/activate
+python3 skills/curso-aprendizaje/scripts/extract.py --input materials/sample-course --out data/chunks.json
+python3 skills/curso-aprendizaje/scripts/build_index.py --chunks data/chunks.json --outdir data/index
+python3 skills/curso-aprendizaje/scripts/generate_learning.py \
+  --index data/index --tema "KNN y escalado" --perfil dm --outdir examples/generated
 ```
 
-(`requirements.txt` está en la raíz de este repo.)
-
-## Probar el paquete
+## Probar
 
 ```bash
-cd curso-aprendizaje
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
 bash comprobar.sh
 ```
-
-## Material real
-
-Copia PPT/PDF locales a `materials/mi-curso/` **en tu máquina**. No subas materiales privados de campus a GitHub.
-
-## Estructura
-
-| Ruta | Para qué |
-|---|---|
-| `skills/curso-aprendizaje/` | La skill (SKILL.md + scripts + procedures) |
-| `templates/` | Experimentos + simulacro examen |
-| `materials/sample-course/` | Fixture de demo |
-| `comprobar.sh` | Pruebas automatizadas |
-
-## Relación con product-flow
-
-Esta skill es el **producto** (cursos). El método de construcción es [product-flow](https://github.com/franciscosdafas133/product-flow); no hace falta para usarla día a día.
