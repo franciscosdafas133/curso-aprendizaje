@@ -1,46 +1,55 @@
 # curso-aprendizaje
 
-Skill Cursor: **sistema de aprendizaje** para Data Mining y Machine Learning (brief del dueño).
+Skill/plugin **portable** de aprendizaje DM/ML: cualquiera la instala; opera sobre **su** carpeta de curso.
 
-## Productos
+## Instalar (para cualquiera)
 
-| | Qué |
-|---|---|
-| **A** | Cuaderno conceptual-experimental (teoría coloquial→rigor + experimento con propósito) |
-| **B (DM)** | Simulacro **práctico** |
-| **B (ML)** | Simulacro **teórico** + simulacro **práctico** (separados) |
+### Opción A — Desde GitHub en Cursor (recomendado)
 
-Aprender: teoría y práctica **conectadas** (A).  
-Evaluar: según perfil (B).
+1. Cursor → **Customize** → plugins / **From GitHub Repository**
+2. Pega: `https://github.com/franciscosdafas133/curso-aprendizaje`
+3. Instala (user o project scope)
+4. En Agent chat: `/curso-aprendizaje`
 
-Infra (extract/OCR/índice/web) sirve para anclar al material; no es el producto.
-
-## Instalar
+### Opción B — Clone manual
 
 ```bash
 git clone https://github.com/franciscosdafas133/curso-aprendizaje.git
-cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.cursor/skills/curso-aprendizaje
-pip install -r curso-aprendizaje/requirements.txt
+cp -R curso-aprendizaje/skills/curso-aprendizaje ~/.cursor/skills/
+# deps de los scripts
+cd curso-aprendizaje && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
-## Generar
+### Opción C — Plugin local de prueba
 
 ```bash
-python3 skills/curso-aprendizaje/scripts/extract.py --input materials/sample-course --out data/chunks.json
-python3 skills/curso-aprendizaje/scripts/build_index.py --chunks data/chunks.json --outdir data/index
-python3 skills/curso-aprendizaje/scripts/generate_learning.py \
-  --index data/index --tema "KNN y escalado" --perfil ml --outdir examples/generated
+mkdir -p ~/.cursor/plugins/local
+cp -R curso-aprendizaje ~/.cursor/plugins/local/curso-aprendizaje
+# Reload Window → Customize → verificar plugin
 ```
 
-## Solo teoría (inspecciona tu carpeta de curso)
+## Usar
+
+1. Abre tu carpeta de curso (`Data_Mining`, `Machine_Learning`, …).
+2. Chat Agent → `/curso-aprendizaje`
+3. Pide: “genera teoría con mis materiales y libros”.
+
+La skill inspecciona **esa** carpeta, descarga libres a `./libros/`, indexa y genera `./generated/`.
 
 ```bash
-# Instalar skill
-cp -R skills/curso-aprendizaje ~/.cursor/skills/curso-aprendizaje
-
-# En la raíz de tu curso (revisa todo lo que hay y procede)
+# equivalente por terminal
 python3 ~/.cursor/skills/curso-aprendizaje/scripts/libros_teoria.py --curso-dir .
+# o, si instalaste como plugin, usa la ruta scripts/ del plugin
 ```
 
-Detalle: `skills/curso-aprendizaje/procedures/libros-teoria.md`.  
+## Qué incluye
+
+| Pieza | Rol |
+|---|---|
+| Skill `curso-aprendizaje` | Método + orquestación |
+| `libros_teoria.py` | Inspeccionar curso → fetch → solo teoría |
+| `generate_learning.py` | Producto A/B |
+| `plugin.json` | Agent Plugins (portable) |
+| `.cursor-plugin/plugin.json` | Cursor Plugins |
+
 Ver `DEFINICION-PRODUCTO.md`. Probar: `bash comprobar.sh`.
